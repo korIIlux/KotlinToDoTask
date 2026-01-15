@@ -15,3 +15,8 @@ Toteutetut ominaisuudet
   - filterByDone(list, done) - näyttää vain tehtävät, jotka ovat done-tilassa.
   - sortByDueDate(list) - järjestää tehtävät määräpäivän mukaan.
   - Napit käyttöliitymälle. 
+
+Käyttöohje
+1. Avaa projekti Android Studiossa.
+2. Käynnistä sovellus emulaattorilla tai fyysisellä laitteella.
+3. Näet tehtävälistan ja voit kokeilla lisäystä, suodatusta, tilan vaihtoa ja lajittelua.
