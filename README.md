@@ -6,7 +6,7 @@ Pieni Android-sovellus, joka on tehty Kotlinilla ja Compose-käyttöliittymäll�
 Toteutetut ominaisuudet
   - Task - data class, jossa kentät "id", "title", "description", "priority", "dueDate" ja "done". 
   
-  -5 valmista tehtävää, jotka näytetään käyttöliitymässä.
+  - 5 valmista tehtävää, jotka näytetään käyttöliitymässä.
   
   Funktiot:
   
