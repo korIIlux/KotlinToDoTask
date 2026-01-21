@@ -8,15 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kotlinviikkotehtavat.ui.theme.KotlinviikkotehtavatTheme
 import com.example.kotlinviikkotehtavat.data.mockTasks
-import com.example.kotlinviikkotehtavat.ui.theme.HomeScreen
-
+import com.example.kotlinviikkotehtavat.ui.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             KotlinviikkotehtavatTheme {
-                HomeScreen(initialTasks = mockTasks)
+                HomeScreen()
             }
         }
     }

@@ -1,89 +1,83 @@
-package com.example.kotlinviikkotehtavat.ui.theme
+package com.example.kotlinviikkotehtavat.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlinviikkotehtavat.domain.Task
-import com.example.kotlinviikkotehtavat.logic.addTask
-import com.example.kotlinviikkotehtavat.logic.filterByDone
-import com.example.kotlinviikkotehtavat.logic.sortByDueDate
-import com.example.kotlinviikkotehtavat.logic.toggleDone
-import androidx.compose.runtime.*
+import com.example.kotlinviikkotehtavat.viewmodel.TaskViewModel
 
 @Composable
-fun HomeScreen(initialTasks: List<Task>) {
-    var tasks by remember { mutableStateOf(initialTasks) }
+fun HomeScreen(taskViewModel: TaskViewModel = viewModel()) {
+    val tasks = taskViewModel.tasks
+    var newTaskTitle by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Task List",
-            fontSize = 24.sp,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Text("Task List", fontSize = 24.sp)
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Row(modifier = Modifier.padding(bottom = 16.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextField(
+                value = newTaskTitle,
+                onValueChange = { newTaskTitle = it },
+                modifier = Modifier.weight(1f),
+                label = { Text("New task") }
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
             Button(onClick = {
-                // demo
-                val newTask = Task(
-                    id = (tasks.maxOfOrNull { it.id } ?: 0) + 1,
-                    title = "New Task",
-                    description = "Description",
-                    priority = 1,
-                    dueDate = "2026-01-30",
-                    done = false
-                )
-                tasks = addTask(tasks, newTask)
+                if (newTaskTitle.isNotBlank()) {
+                    val newTask = Task(
+                        id = (tasks.maxOfOrNull { it.id } ?: 0) + 1,
+                        title = newTaskTitle,
+                        description = "",
+                        priority = 1,
+                        dueDate = "2026-01-30",
+                        done = false
+                    )
+                    taskViewModel.addTask(newTask)
+                    newTaskTitle = ""
+                }
             }) {
-                Text("Add Task")
+                Text("Add")
             }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Button(onClick = { tasks = sortByDueDate(tasks) }) {
-                Text("Sort by DueDate")
+        Row {
+            Button(onClick = { taskViewModel.sortByDueDate() }) {
+                Text("Sort")
             }
-
             Spacer(modifier = Modifier.width(8.dp))
-
-            Button(onClick = { tasks = filterByDone(tasks, done = true) }) {
-                Text("Show Done")
+            Button(onClick = { taskViewModel.filterByDone(true) }) {
+                Text("Done")
             }
-
             Spacer(modifier = Modifier.width(8.dp))
-
-            Button(onClick = { tasks = filterByDone(tasks, done = false) }) {
-                Text("Show Not Done")
+            Button(onClick = { taskViewModel.filterByDone(false) }) {
+                Text("Not done")
             }
         }
 
-        tasks.forEach { task ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = if (task.done) "|Done| ${task.title}" else "|In process| ${task.title}",
-                    fontSize = 18.sp,
-                    modifier = Modifier.weight(1f)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn {
+            items(tasks) { task ->
+                TaskRow(
+                    task = task,
+                    onToggle = { taskViewModel.toggleDone(task.id) },
+                    onDelete = { taskViewModel.removeTask(task.id) }
                 )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Button(onClick = { tasks = toggleDone(tasks, task.id) }) {
-                    Text("Toggle Done")
-                }
             }
         }
     }
