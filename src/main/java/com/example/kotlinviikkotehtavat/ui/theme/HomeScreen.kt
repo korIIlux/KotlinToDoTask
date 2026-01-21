@@ -67,6 +67,10 @@ fun HomeScreen(taskViewModel: TaskViewModel = viewModel()) {
             Button(onClick = { taskViewModel.filterByDone(false) }) {
                 Text("Not done")
             }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = { taskViewModel.showAll() }) {
+                Text("All")
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
