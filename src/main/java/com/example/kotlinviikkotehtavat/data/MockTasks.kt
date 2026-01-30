@@ -1,5 +1,5 @@
 package com.example.kotlinviikkotehtavat.data
-import com.example.kotlinviikkotehtavat.domain.Task
+import com.example.kotlinviikkotehtavat.model.Task
 
 val mockTasks = listOf(
     Task(

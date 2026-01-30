@@ -1,4 +1,4 @@
-package com.example.kotlinviikkotehtavat.domain
+package com.example.kotlinviikkotehtavat.model
 
 data class Task(
     val id: Int,

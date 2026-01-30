@@ -1,21 +1,21 @@
-package com.example.kotlinviikkotehtavat.ui
+package com.example.kotlinviikkotehtavat.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.kotlinviikkotehtavat.domain.Task
 import com.example.kotlinviikkotehtavat.viewmodel.TaskViewModel
+import com.example.kotlinviikkotehtavat.model.Task
 
 @Composable
 fun HomeScreen(taskViewModel: TaskViewModel = viewModel()) {
-    val tasks = taskViewModel.tasks
+    val tasks by taskViewModel.tasks.collectAsState()
+    var selectedTask by remember { mutableStateOf<Task?>(null) }
     var newTaskTitle by remember { mutableStateOf("") }
 
     Column(
@@ -24,40 +24,40 @@ fun HomeScreen(taskViewModel: TaskViewModel = viewModel()) {
             .padding(16.dp)
     ) {
         Text("Task List", fontSize = 24.sp)
-        Spacer(modifier = Modifier.height(16.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Row {
             TextField(
                 value = newTaskTitle,
                 onValueChange = { newTaskTitle = it },
                 modifier = Modifier.weight(1f),
                 label = { Text("New task") }
             )
-
             Spacer(modifier = Modifier.width(8.dp))
-
             Button(onClick = {
                 if (newTaskTitle.isNotBlank()) {
-                    val newTask = Task(
-                        id = (tasks.maxOfOrNull { it.id } ?: 0) + 1,
-                        title = newTaskTitle,
-                        description = "",
-                        priority = 1,
-                        dueDate = "2026-01-30",
-                        done = false
+                    taskViewModel.addTask(
+                        Task(
+                            id = (tasks.maxOfOrNull { it.id } ?: 0) + 1,
+                            title = newTaskTitle,
+                            description = "",
+                            priority = 1,
+                            dueDate = "2026-01-30",
+                            done = false
+                        )
                     )
-                    taskViewModel.addTask(newTask)
                     newTaskTitle = ""
                 }
             }) {
                 Text("Add")
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row {
-            Button(onClick = { taskViewModel.sortByDueDate() }) {
-                Text("Sort")
+            Button(onClick = { taskViewModel.showAll() }) {
+                Text("All")
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(onClick = { taskViewModel.filterByDone(true) }) {
@@ -68,8 +68,8 @@ fun HomeScreen(taskViewModel: TaskViewModel = viewModel()) {
                 Text("Not done")
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Button(onClick = { taskViewModel.showAll() }) {
-                Text("All")
+            Button(onClick = { taskViewModel.sortByDueDate() }) {
+                Text("Sort")
             }
         }
 
@@ -79,10 +79,22 @@ fun HomeScreen(taskViewModel: TaskViewModel = viewModel()) {
             items(tasks) { task ->
                 TaskRow(
                     task = task,
-                    onToggle = { taskViewModel.toggleDone(task.id) },
-                    onDelete = { taskViewModel.removeTask(task.id) }
+                    onClick = { selectedTask = task },
+                    onToggle = { taskViewModel.toggleDone(task.id) }
                 )
             }
         }
+    }
+
+    selectedTask?.let {
+        DetailDialog(
+            task = it,
+            onDismiss = { selectedTask = null },
+            onUpdate = { updated -> taskViewModel.updateTask(updated) },
+            onDelete = {
+                taskViewModel.removeTask(it.id)
+                selectedTask = null
+            }
+        )
     }
 }

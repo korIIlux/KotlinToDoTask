@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kotlinviikkotehtavat.ui.theme.KotlinviikkotehtavatTheme
-import com.example.kotlinviikkotehtavat.data.mockTasks
-import com.example.kotlinviikkotehtavat.ui.HomeScreen
+import com.example.kotlinviikkotehtavat.view.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
