@@ -7,6 +7,7 @@ val mockTasks = listOf(
         title = "Test",
         description = "First test",
         priority = 2,
+        createdDate = "2026-01-01",
         dueDate = "2026-01-20",
         done = false
     ),
@@ -15,6 +16,7 @@ val mockTasks = listOf(
         title = "Test 2",
         description = "Second test",
         priority = 1,
+        createdDate = "2026-01-01",
         dueDate = "2026-01-22",
         done = false
     ),
@@ -23,6 +25,7 @@ val mockTasks = listOf(
         title = "Test 3",
         description = "Third test",
         priority = 3,
+        createdDate = "2026-01-01",
         dueDate = "2026-01-18",
         done = false
     ),
@@ -31,6 +34,7 @@ val mockTasks = listOf(
         title = "Test 4",
         description = "Fourth test",
         priority = 1,
+        createdDate = "2026-01-01",
         dueDate = "2026-01-21",
         done = false
     ),
@@ -39,6 +43,7 @@ val mockTasks = listOf(
         title = "Test 5",
         description = "Fifth test",
         priority = 4,
+        createdDate = "2026-01-01",
         dueDate = "2026-01-25",
         done = false
     )

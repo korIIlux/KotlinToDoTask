@@ -45,6 +45,6 @@ class TaskViewModel : ViewModel() {
     }
 
     fun sortByDueDate() {
-        _tasks.value = _tasks.value.sortedBy { it.dueDate }
+        _tasks.value = allTasks.value.sortedBy { it.dueDate }
     }
 }

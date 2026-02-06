@@ -5,55 +5,42 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.kotlinviikkotehtavat.ROUTE_CALENDAR
 import com.example.kotlinviikkotehtavat.viewmodel.TaskViewModel
 import com.example.kotlinviikkotehtavat.model.Task
 
 @Composable
-fun HomeScreen(taskViewModel: TaskViewModel = viewModel()) {
+fun HomeScreen(navController: NavController, taskViewModel: TaskViewModel) {
     val tasks by taskViewModel.tasks.collectAsState()
     var selectedTask by remember { mutableStateOf<Task?>(null) }
-    var newTaskTitle by remember { mutableStateOf("") }
+    var showAddDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text("Task List", fontSize = 24.sp)
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Row {
-            TextField(
-                value = newTaskTitle,
-                onValueChange = { newTaskTitle = it },
-                modifier = Modifier.weight(1f),
-                label = { Text("New task") }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(onClick = {
-                if (newTaskTitle.isNotBlank()) {
-                    taskViewModel.addTask(
-                        Task(
-                            id = (tasks.maxOfOrNull { it.id } ?: 0) + 1,
-                            title = newTaskTitle,
-                            description = "",
-                            priority = 1,
-                            dueDate = "2026-01-30",
-                            done = false
-                        )
-                    )
-                    newTaskTitle = ""
-                }
-            }) {
-                Text("Add")
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Task List", fontSize = 24.sp, modifier = Modifier.weight(1f))
+
+            Button(onClick = { navController.navigate(ROUTE_CALENDAR) }) {
+                Text("Calendar")
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(8.dp))
+
+        Button(onClick = { showAddDialog = true }) {
+            Text("Add Task")
+        }
+
+        Spacer(Modifier.height(8.dp))
 
         Row {
             Button(onClick = { taskViewModel.showAll() }) {
@@ -84,6 +71,13 @@ fun HomeScreen(taskViewModel: TaskViewModel = viewModel()) {
                 )
             }
         }
+    }
+
+    if (showAddDialog) {
+        AddTaskDialog(
+            onDismiss = { showAddDialog = false },
+            onSave = { taskViewModel.addTask(it) }
+        )
     }
 
     selectedTask?.let {
